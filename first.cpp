@@ -16,8 +16,9 @@ int solving_equation(float a, float b, float c, float* x1, float* x2);
 float finding_desc(float a, float b, float c);
 int solving_eq_deg2(float a, float b, float c, float* x1, float* x2);
 int solving_eq_deg1(float b, float c, float* x1);
-void printing_solutions(int amount_solution, float x1, float x2);
-void entering_coefs(float a, float b, float c);
+void printing_solutions(int amount_solution, float a, float b, float c, float x1, float x2);
+void entering_coefs(float* a, float* b, float* c);
+bool is_equal(float a, float b);
 // char is_appealing();
 
 
@@ -25,16 +26,22 @@ int main(){
     float a = NAN, b = NAN, c = NAN;
     float x1 = NAN, x2 = NAN;
 
+    entering_coefs(&a, &b, &c);
     int amount_solution = solving_equation(a, b, c, &x1, &x2);
 
-    printing_solutions(amount_solution, x1, x2);
+    printing_solutions(amount_solution, a, b, c, x1, x2);
 }
 
 
 int solving_equation(float a, float b, float c, float* x1, float* x2) {
-    entering_coefs(a, b, c);
+    int amount_solutions = 0;
 
-    int amount_solutions = solving_eq_deg2(a, b, c, x1, x2);
+    if (is_equal(a, 0)) {
+        amount_solutions = solving_eq_deg1(b, c, x1);
+
+    }else{
+        amount_solutions = solving_eq_deg2(a, b, c, x1, x2);
+    }
 
     return amount_solutions;
 }
@@ -45,16 +52,13 @@ int solving_eq_deg2(float a, float b, float c, float* x1, float* x2) {
     assert(isfinite(b));
     assert(isfinite(c));
 
-    if (a == 0) {
-        solving_eq_deg1(b, c, x1);
-    }
 
     float desc = finding_desc(a, b, c);
 
     if (desc < 0) {
         return 0;
 
-    } else if (desc == 0) {
+    } else if (is_equal(desc, 0)) {
         *x1 = *x2 = -b / (2 * a);
         return 1;
 
@@ -73,10 +77,10 @@ int solving_eq_deg2(float a, float b, float c, float* x1, float* x2) {
 
 
 int solving_eq_deg1(float b, float c, float* x1) {
-    if (b == 0 && c == 0){
+    if (is_equal(b, 0) && is_equal(c, 0)){
         return MAX_DEG + 1; /*при max степени уравнения n <= n корней*/
 
-    } else if (b == 0 && c != 0){
+    } else if (is_equal(b, 0) && !is_equal(c, 0)){
         return 0;
 
     }else{
@@ -92,26 +96,26 @@ float finding_desc(float a, float b, float c) {
 
 }
 
-void printing_solutions(int amount_solution, float x1, float x2) {
+void printing_solutions(int amount_solution, float a, float b, float c, float x1, float x2) {
     switch(amount_solution){
             case (PROBLEM):
                 printf("ПРОИЗОШЛА ОШИБКА/n");
                 break;
 
             case (NO_SOLUTIONS):
-                printf("У уравнения нет решений :(\n");
+                printf("У уравнения %.2fx^2 + %.2fx + %.2f = 0  нет решений :(\n", a, b, c);
                 break;
 
             case (ONE_SOLUTION):
-                printf("У уравнения 1 корень %.2f\n", x1);
+                printf("У уравнения %.2fx^2 + %.2fx + %.2f = 0 \n1 корень %.2f\n", a, b, c, x1);
                 break;
 
             case (TWO_SOLUTIONS):
-                printf("У уравнения 2 корня %.2f и %.2f\n", x1, x2);
+                printf("У уравнения %.2fx^2 + %.2fx + %.2f = 0 \n2 корня %.2f и %.2f\n", a, b, c, x1, x2);
                 break;
 
             case (INFINITY_SOLUTIONS):
-                printf("У уравнения бесконечное количество решений\n");
+                printf("ВАУ! У уравнения %.2fx^2 + %.2fx + %.2f = 0 \nбесконечное количество решений\n", a, b, c);
                 break;
 
             default:
@@ -121,19 +125,19 @@ void printing_solutions(int amount_solution, float x1, float x2) {
 }
 
 
-void entering_coefs(float* a, float b, float* c) {
+void entering_coefs(float* a, float* b, float* c) {
     printf("Привет, будем решать ax^2 + bx + c = 0! \nПрисылай коэффициенты через пробел ");
 
     scanf("%f %f %f", a, b, c);
 
-    assert(isfinite(a));
-    assert(isfinite(b));
-    assert(isfinite(c));
+    assert(isfinite(*a));
+    assert(isfinite(*b));
+    assert(isfinite(*c));
 }
 
 
 bool is_equal(float a, float b) {
-    return (fabs(a - b) < 1e-6f)
+    return (fabs(a - b) < 1e-6f);
 }
 
 // char is_appealing(){
