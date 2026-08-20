@@ -3,21 +3,19 @@
 #include <math.h>
 
 
-#define MAX_DEG 2 /*максимальная степень уравнения, которе мы решаем*/
 
 #define PROBLEM -1
 #define NO_SOLUTIONS 0
 #define ONE_SOLUTION 1
 #define TWO_SOLUTIONS 2
-#define INFINITY_SOLUTIONS MAX_DEG + 1
+#define INFINITY_SOLUTIONS 3
 
-
+void entering_coefs(float* a, float* b, float* c);
 int solving_equation(float a, float b, float c, float* x1, float* x2);
-float finding_desc(float a, float b, float c);
 int solving_eq_deg2(float a, float b, float c, float* x1, float* x2);
+float finding_desc(float a, float b, float c);
 int solving_eq_deg1(float b, float c, float* x1);
 void printing_solutions(int amount_solution, float a, float b, float c, float x1, float x2);
-void entering_coefs(float* a, float* b, float* c);
 bool is_equal(float a, float b);
 // char is_appealing();
 
@@ -27,6 +25,7 @@ int main(){
     float x1 = NAN, x2 = NAN;
 
     entering_coefs(&a, &b, &c);
+
     int amount_solution = solving_equation(a, b, c, &x1, &x2);
 
     printing_solutions(amount_solution, a, b, c, x1, x2);
@@ -34,6 +33,12 @@ int main(){
 
 
 int solving_equation(float a, float b, float c, float* x1, float* x2) {
+    assert(isfinite(a));
+    assert(isfinite(b));
+    assert(isfinite(c));
+    assert(x1 != NULL);
+    assert(x2 != NULL);
+
     int amount_solutions = 0;
 
     if (is_equal(a, 0)) {
@@ -51,47 +56,54 @@ int solving_eq_deg2(float a, float b, float c, float* x1, float* x2) {
     assert(isfinite(a));
     assert(isfinite(b));
     assert(isfinite(c));
-
+    assert(x1 != NULL);
+    assert(x2 != NULL);
 
     float desc = finding_desc(a, b, c);
 
     if (desc < 0) {
-        return 0;
+        return NO_SOLUTIONS;
 
     } else if (is_equal(desc, 0)) {
         *x1 = *x2 = -b / (2 * a);
-        return 1;
+        return ONE_SOLUTION;
 
     } else if (desc > 0){
         float sqr_desc = sqrt(desc);
 
         *x1 = (-b + sqr_desc) / (2 * a);
         *x2 = (-b - sqr_desc) / (2 * a);
-        return 2;
+        return TWO_SOLUTIONS;
 
     } else{
-        return -1;
+        return PROBLEM;
 
     }
 }
 
 
 int solving_eq_deg1(float b, float c, float* x1) {
+    assert(isfinite(b));
+    assert(isfinite(c));
+    assert(x1 != NULL);
     if (is_equal(b, 0) && is_equal(c, 0)){
-        return MAX_DEG + 1; /*при max степени уравнения n <= n корней*/
+        return INFINITY_SOLUTIONS; /*при max степени уравнения n <= n корней*/
 
     } else if (is_equal(b, 0) && !is_equal(c, 0)){
-        return 0;
+        return NO_SOLUTIONS;
 
     }else{
         *x1 = (-c / b);
-        return 1;
+        return ONE_SOLUTION;
 
     }
 }
 
 
 float finding_desc(float a, float b, float c) {
+    assert(isfinite(a));
+    assert(isfinite(b));
+    assert(isfinite(c));
     return (b * b) - (4 * a * c);
 
 }
@@ -126,7 +138,7 @@ void printing_solutions(int amount_solution, float a, float b, float c, float x1
 
 
 void entering_coefs(float* a, float* b, float* c) {
-    printf("Привет, будем решать ax^2 + bx + c = 0! \nПрисылай коэффициенты через пробел ");
+    printf("Привет, будем решать ax^2 + bx + c = 0! \nВписывай коэффициенты через пробел ");
 
     scanf("%f %f %f", a, b, c);
 
@@ -137,6 +149,9 @@ void entering_coefs(float* a, float* b, float* c) {
 
 
 bool is_equal(float a, float b) {
+    assert(isfinite(a));
+    assert(isfinite(b));
+
     return (fabs(a - b) < 1e-6f);
 }
 
