@@ -3,12 +3,7 @@
 #include <math.h>
 
 
-#define PROBLEM -1
-#define NO_SOLUTIONS 0
-#define ONE_SOLUTION 1
-#define TWO_SOLUTIONS 2
-#define INFINITY_SOLUTIONS 3
-#define CRITICAL 2
+enum possible_amount_solutions {PROBLEM = -1, NO_SOLUTIONS, ONE_SOLUTION, TWO_SOLUTIONS, INFINITY_SOLUTIONS};
 #define EPSILON 1e-6f
 
 
@@ -22,6 +17,13 @@ int solving_eq_deg1(float coef_1, float coef_0, float* solution_1);
 void printing_solutions(int amount_solution, float coef_2, float coef_1, float coef_0, float solution_1, float solution_2);
 bool is_equal(float coef_2, float coef_1);
 void cleaning_bufer();
+
+
+struct equation{
+    float coef2, coef_1, coef_0;
+    float solution_1, solution_2;
+
+}
 
 
 int main() {
