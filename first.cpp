@@ -12,24 +12,23 @@
 #define EPSILON 1e-6f
 
 
+void entering_coefs(float* coef_2, float* coef_1, float* coef_0);
 void entering(float* coef, char litera);
+bool is_correct_entering(float* coef, char litera);
 int solving_equation(float coef_2, float coef_1, float coef_0, float* solution_1, float* solution_2);
 int solving_eq_deg2(float coef_2, float coef_1, float coef_0, float* solution_1, float* solution_2);
 float finding_desc(float coef_2, float coef_1, float coef_0);
 int solving_eq_deg1(float coef_1, float coef_0, float* solution_1);
 void printing_solutions(int amount_solution, float coef_2, float coef_1, float coef_0, float solution_1, float solution_2);
 bool is_equal(float coef_2, float coef_1);
-// char is_appealing();
+void cleaning_bufer();
 
 
-int main(){
+int main() {
     float coef_2 = NAN, coef_1 = NAN, coef_0 = NAN;
     float solution_1 = NAN, solution_2 = NAN;
 
-    printf("Привет! будем решать ax^2 + bx + c = 0\n");
-    entering(&coef_2, 'a');
-    entering(&coef_1, 'b');
-    entering(&coef_0, 'c');
+    entering_coefs(&coef_2, &coef_1, &coef_0);
 
     int amount_solution = solving_equation(coef_2, coef_1, coef_0, &solution_1, &solution_2);
 
@@ -37,36 +36,30 @@ int main(){
 }
 
 
+void entering_coefs(float* coef_2, float* coef_1, float* coef_0) {
+    printf("Привет! будем решать ax^2 + bx + c = 0 \n");
 
-void entering(float* coef, char litera){
-    // char input[100];
-    // int i = 0;
-    // bool not_number_input_flag = false;
-    // int amount_dots = 0;
+    entering(coef_2, 'a');
+    entering(coef_1, 'b');
+    entering(coef_0, 'c');
+}
 
-    printf("Введи коэффициент %c ", litera);
-//     fgets(input, sizeof(input), stdin);
-//
-//     while (input[i] != '\0' && amount_dots <= 1){
-//         if ((input[i] - '0') > 9) {
-//             not_number_input_flag = true;
-//             break;
-//         } else if (input[i] == '.') {
-//             amount_dots++;
-//         }
-//         i++;
-//     }
-//
-//     if (not_number_input_flag || (amount_dots > 1)) {
-//         entering(coef, litera);
-//     } else {
-//         *coef = atof(input);
-//     }
 
-    if (scanf("%f", coef) != 1 || getchar() != '\n'){
-        while (getchar() != '\n') {;}
-        entering(coef, litera);
+void entering(float* coef, char litera) {
+    while (!is_correct_entering(coef, litera)) {
+        printf("ЧУВААААК, давай без приколов, ");
     }
+}
+
+
+bool is_correct_entering(float* coef, char litera) {
+    printf("введи коэффициент %c: ", litera);
+
+    if (scanf("%f", coef) != 1 || getchar() != '\n') {
+        cleaning_bufer();
+        return false;
+    }
+    return true;
 }
 
 
@@ -82,7 +75,7 @@ int solving_equation(float coef_2, float coef_1, float coef_0, float* solution_1
     if (is_equal(coef_2, 0)) {
         amount_solutions = solving_eq_deg1(coef_1, coef_0, solution_1);
 
-    }else{
+    } else {
         amount_solutions = solving_eq_deg2(coef_2, coef_1, coef_0, solution_1, solution_2);
     }
 
@@ -106,14 +99,14 @@ int solving_eq_deg2(float coef_2, float coef_1, float coef_0, float* solution_1,
         *solution_1 = *solution_2 = -coef_1 / (2 * coef_2);
         return ONE_SOLUTION;
 
-    } else if (desc > 0){
+    } else if (desc > 0) {
         float sqr_desc = sqrt(desc);
 
         *solution_1 = (-coef_1 + sqr_desc) / (2 * coef_2);
         *solution_2 = (-coef_1 - sqr_desc) / (2 * coef_2);
         return TWO_SOLUTIONS;
 
-    } else{
+    } else {
         return PROBLEM;
 
     }
@@ -154,23 +147,26 @@ void printing_solutions(int amount_solution, float coef_2, float coef_1, float c
                 break;
 
             case (NO_SOLUTIONS):
-                printf("У уравнения %.2lgx^2 + %.2lgx + %.2lg = 0  нет решений :(\n", coef_2, coef_1, coef_0);
+                printf("┐(￣ヘ￣)┌ У уравнения %.2lfx^2 + %.2lfx + %.2lf = 0 нет решений\n", coef_2, coef_1, coef_0);
                 break;
 
             case (ONE_SOLUTION):
-                printf("У уравнения %.2lgx^2 + %.2lgx + %.2lg = 0 \n1 корень: %.2lg\n", coef_2, coef_1, coef_0, solution_1);
+                printf("(＾▽＾) У уравнения %.2lfx^2 + %.2lfx + %.2lf = 0 \n"
+                       "1 корень: %.2lf\n", coef_2, coef_1, coef_0, solution_1);
                 break;
 
             case (TWO_SOLUTIONS):
-                printf("У уравнения %.2lgx^2 + %.2lgx + %.2lg = 0 \n2 корня %.2lg и %.2lg\n", coef_2, coef_1, coef_0, solution_1, solution_2);
+                printf("(o˘◡˘o) У уравнения %.2lfx^2 + %.2lfx + %.2lf = 0 \n"
+                       "2 корня: %.2lf и %.2lf\n", coef_2, coef_1, coef_0, solution_1, solution_2);
                 break;
 
             case (INFINITY_SOLUTIONS):
-                printf("ВАУ! У уравнения %.2lgx^2 + %.2lgx + %.2lg = 0 \nбесконечное количество решений\n", coef_2, coef_1, coef_0);
+                printf("(⊙_⊙) У уравнения %.2lfx^2 + %.2lfx + %.2lf = 0 \n"
+                       "бесконечное количество решений\n", coef_2, coef_1, coef_0);
                 break;
 
             default:
-                printf("ПРОИЗОШЛА ОШИБКА\n");
+                printf("(^_-) ПРОИЗОШЛА ОШИБКА\n");
                 break;
         }
 }
@@ -183,13 +179,9 @@ bool is_equal(float a, float b) {
     return (fabs(a - b) < EPSILON);
 }
 
-// char is_appealing(){
-//     printf("К тебе Можно обращаться 'бро'? [Y/N]\n");
-//     if (getchar() == 'Y'){
-//         return {'Б', 'р', 'о', 0};
-//
-//     }else{
-//         return {'Б', 'р', 'о', 0};
-//
-//     }
-// }
+
+void cleaning_bufer() {
+    while (getchar() != '\n') {;}
+}
+
+
