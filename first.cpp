@@ -22,7 +22,7 @@ void cleaning_bufer();
 struct equation{
     float coef2, coef_1, coef_0;
     float solution_1, solution_2;
-
+    int amount_solution;
 }
 
 
@@ -30,11 +30,25 @@ int main() {
     float coef_2 = NAN, coef_1 = NAN, coef_0 = NAN;
     float solution_1 = NAN, solution_2 = NAN;
 
+    struct problem_book[100];
+
     entering_coefs(&coef_2, &coef_1, &coef_0);
 
     int amount_solution = solving_equation(coef_2, coef_1, coef_0, &solution_1, &solution_2);
 
     printing_solutions(amount_solution, coef_2, coef_1, coef_0, solution_1, solution_2);
+
+    int i = 0;
+    printf("Хотите внесу в задачник? [Y/N]");
+    if (getchar() == 'Y'){
+        problem_book[i].coef_2 = coef_2;
+        problem_book[i].coef_1 = coef_1;
+        problem_book[i].coef_0 = coef_0;
+        problem_book[i].solution_1 = solution_1;
+        problem_book[i].solution_2 = solution_2;
+        problem_book[i].amount_solution = amount_solution;
+        i++;
+    }
 }
 
 
