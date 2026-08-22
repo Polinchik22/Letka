@@ -3,26 +3,15 @@
 #include <math.h>
 
 
-enum AmountSolutions {INITIALIZATION = -2, PROBLEM, NO_SOLUTIONS, ONE_SOLUTION, TWO_SOLUTIONS, INFINITY_SOLUTIONS};
-const float EPSILON = 1e-6f;
-
-
 int running_tests();
-void creating_equation_by_solutions(AmountSolutions amount_solutions, float* coef_2, float* coef_1, float* coef_0, float solution_1, float solution_2);
-bool run_test(float coef_2, float coef_1, float coef_0, int amount_solutions, float solution_1, float solution_2);
+bool run_test(float coef_2, float coef_1, float coef_0, AmountSolutions amount_solutions, float solution_1, float solution_2);
 void printing_error(float coef_2, float coef_1, float coef_0, AmountSolutions ref_amount_solutions, float ref_solution_1, float ref_solution_2, AmountSolutions e_amount_solutions, float e_solution_1, float e_solution_2);
-
-
-int mail(){
-    running_tests();
-
-    return 0;
-}
+void creating_equation_by_solutions(AmountSolutions amount_solutions, float* coef_2, float* coef_1, float* coef_0, float solution_1, float solution_2);
 
 
 int running_tests(){
     float coef_2 = 1, coef_1 = -5, coef_0 = 6;
-    int ref_amount_solutions = 2;
+    AmountSolutions ref_amount_solutions =  TWO_SOLUTIONS;
     float ref_solution_1 = 2, ref_solution_2 = 3;
 
     bool is_correct = run_test(coef_2, coef_1, coef_0, ref_amount_solutions, ref_solution_1, ref_solution_2);
@@ -45,13 +34,13 @@ bool run_test(float coef_2, float coef_1, float coef_0, AmountSolutions ref_amou
             return true;
         } else {
             printing_error(coef_2, coef_1, coef_0, ref_amount_solutions, ref_solution_1, ref_solution_2, e_amount_solutions, e_solution_1, e_solution_2);
-            return false
+            return false;
         }
     }
 }
 
 
-printing_error(float coef_2, float coef_1, float coef_0, AmountSolutions ref_amount_solutions, float ref_solution_1, float ref_solution_2, AmountSolutions e_amount_solutions, float e_solution_1, float e_solution_2){
+void printing_error(float coef_2, float coef_1, float coef_0, AmountSolutions ref_amount_solutions, float ref_solution_1, float ref_solution_2, AmountSolutions e_amount_solutions, float e_solution_1, float e_solution_2){
     printf("ОШИБКА в решении уравнения: %.2lfx^2 + %.2lfx + %.2lf = 0 \n"
            "Ожидалось  %d решений: первое %5.2lf, второе %5.2lf\n"
            "Получилось %d решений: первое %5.2lf, второе %5.2lf\n",
